@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-fluency-test-suite"
+version = "0.1.0"
+description = "Automated test suite for Identity and Task microservices with JWT authentication"
+authors = [{name = "Test Suite", email = "test@example.com"}]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "pytest>=7.4.3",
+    "requests>=2.31.0",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.setuptools]
+packages = ["config"]
+
+[project.optional-dependencies]
+dev = [
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+addopts = "-v --tb=short"
+
+[tool.black]
+line-length = 100
+target-version = ["py39", "py310", "py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+select = ["E", "F", "W", "I"]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
