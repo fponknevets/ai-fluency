@@ -33,6 +33,7 @@ env/
 .pytest_cache/
 .coverage
 htmlcov/
+reports/
 
 # IDE
 .vscode/

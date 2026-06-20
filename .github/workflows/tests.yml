@@ -1,0 +1,71 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+    
+    - name: Install dependencies
+      run: ~/.local/bin/uv sync --extra dev
+    
+    - name: Run tests with coverage
+      run: ~/.local/bin/uv run pytest --cov=config --cov=tests --cov-report=xml --html=reports/test_report.html --self-contained-html --json-report --json-report-file=reports/test_report.json
+    
+    - name: Upload coverage reports
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+    
+    - name: Upload test reports
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-reports-${{ matrix.python-version }}
+        path: reports/
+    
+    - name: Comment PR with test results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const reportPath = 'reports/test_report.json';
+          if (fs.existsSync(reportPath)) {
+            const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+            const summary = `
+            ## Test Results
+            - **Total**: ${report.summary.total}
+            - **Passed**: ${report.summary.passed}
+            - **Failed**: ${report.summary.failed}
+            - **Skipped**: ${report.summary.skipped}
+            - **Duration**: ${report.summary.duration.toFixed(2)}s
+            `;
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+          }

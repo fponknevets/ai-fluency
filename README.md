@@ -96,7 +96,26 @@ uv run pytest tests/test_identity_service_health.py
 
 **With coverage:**
 ```bash
-uv run pytest --cov=tests
+uv sync --extra dev  # Install coverage plugin first
+uv run pytest --cov=config --cov=tests --cov-report=html
+```
+
+**With HTML report:**
+```bash
+uv sync --extra dev  # Install pytest-html first
+uv run pytest --html=reports/test_report.html --self-contained-html
+```
+
+**With JSON report:**
+```bash
+uv sync --extra dev  # Install pytest-json-report first
+uv run pytest --json-report --json-report-file=reports/test_report.json
+```
+
+**Full reporting (coverage + HTML + JSON):**
+```bash
+uv sync --extra dev
+uv run pytest --cov=config --cov=tests --cov-report=html --html=reports/test_report.html --self-contained-html --json-report --json-report-file=reports/test_report.json
 ```
 
 **Watch mode (requires pytest-watch):**
@@ -106,7 +125,7 @@ uv run pytest-watch
 
 ### Test Coverage Summary
 
-**Total: 57 tests passing**
+**Total: 63 tests passing**
 
 | Category | Count | Tests |
 |----------|-------|-------|
@@ -117,6 +136,7 @@ uv run pytest-watch
 | **Authorization** | 6 | Ownership, isolation, access control |
 | **Input Validation** | 10 | Required fields, types, boundaries, injection |
 | **Data Integrity** | 6 | Timestamps, IDs, field persistence |
+| **Performance** | 6 | Response times, concurrency, load testing |
 
 ### Project Phases
 
@@ -187,8 +207,23 @@ uv run pytest-watch
   - [x] User ID uniqueness
 - [x] All 23 Phase 4 tests passing
 
-#### Phase 5: Reporting & CI/CD (planned)
-- [ ] Test report generation (HTML/JSON output)
-- [ ] GitHub Actions CI/CD pipeline
-- [ ] Test coverage reports
-- [ ] Performance and load testing
+#### Phase 5: Reporting & CI/CD ✓
+- [x] Test report generation (HTML/JSON output)
+  - [x] pytest-html for interactive HTML reports
+  - [x] pytest-json-report for JSON test output
+- [x] GitHub Actions CI/CD pipeline
+  - [x] Automated test runs on push/PR
+  - [x] Multi-version Python testing (3.9, 3.10, 3.11, 3.12)
+  - [x] Coverage report uploads to Codecov
+  - [x] PR comment with test results
+- [x] Test coverage reports
+  - [x] pytest-cov for code coverage analysis
+  - [x] HTML coverage reports (htmlcov/)
+- [x] Performance and load testing (6 tests)
+  - [x] Task creation response time (< 500ms)
+  - [x] List tasks response time (< 1000ms)
+  - [x] Concurrent task creation (10 threads, < 10% failure)
+  - [x] Concurrent task reads (10 threads, < 10% failure)
+  - [x] Login endpoint performance (< 300ms)
+  - [x] User info endpoint performance (< 200ms)
+- [x] All 6 Phase 5 performance tests passing
