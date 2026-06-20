@@ -47,18 +47,27 @@ Automated test suite for Identity Service and Task Service microservices with JW
 
 ```
 ai-fluency/
-├── config/
+├── config/                # Configuration and HTTP utilities
 │   ├── __init__.py
-│   ├── config.py          # Configuration loader from .env
+│   ├── config.py          # Environment configuration loader
 │   ├── http_client.py     # HTTP client with Bearer token support
-│   └── auth.py            # JWT authentication
-├── tests/
+│   └── auth.py            # User registration and JWT authentication
+├── tests/                 # Test suite (57 tests)
 │   ├── __init__.py
-│   └── test_identity_service_health.py  # Health endpoint tests
-├── fixtures/              # Test data and fixtures (future use)
-├── conftest.py            # pytest configuration and shared fixtures
-├── pyproject.toml         # Project metadata and dependencies (uv)
-├── .env.example           # Configuration template
+│   ├── test_identity_service_health.py      # Health endpoint
+│   ├── test_identity_service_registration.py # User registration (8 tests)
+│   ├── test_identity_service_login.py       # User login/auth (8 tests)
+│   ├── test_identity_service_user.py        # User info endpoint (7 tests)
+│   ├── test_task_service_health.py          # Task service health
+│   ├── test_task_service_crud.py            # Task CRUD operations (5 tests)
+│   ├── test_jwt_security.py                 # JWT validation (5 tests)
+│   ├── test_authorization.py                # Access control/RBAC (6 tests)
+│   ├── test_input_validation.py             # Input validation (10 tests)
+│   └── test_data_integrity.py               # Data integrity (6 tests)
+├── conftest.py            # pytest fixtures (session-scoped auth clients)
+├── pyproject.toml         # Project metadata, dependencies, pytest config
+├── uv.lock                # Dependency lock file
+├── .env.example           # Environment configuration template
 ├── .gitignore             # Git ignore rules
 └── README.md              # This file
 ```
